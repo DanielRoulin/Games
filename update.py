@@ -9,11 +9,10 @@ path = os.path.dirname(os.path.realpath(__file__))
 version_path = os.path.join(path, "VERSION.txt")
 
 def hash_file(path):
-    print(path)
     file_size = os.path.getsize(path)
-    with open(path) as f:
-        string = f"blob {file_size}\x00{f.read()}"
-    return hashlib.sha1(string.encode()).hexdigest()
+    with open(path, "rb") as f:
+        string = f"blob {file_size}\x00".encode() + f.read()
+    return hashlib.sha1(string).hexdigest()
 
 def update_available():
     if not os.path.exists(version_path):
