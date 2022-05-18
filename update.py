@@ -17,7 +17,6 @@ def hash_file(path):
 def update_available():
     if not os.path.exists(version_path):
         return True
-
     r = requests.get(version_url)
     remote_version = r.text
     with open(version_path) as f:
@@ -32,6 +31,7 @@ def download_files(url):
         if f["type"] == "file":
             complete_path = os.path.join(path, f["path"])
             if not os.path.exists(complete_path) or f["sha"] != hash_file(complete_path):
+                print("Updating file " + f["path"])
                 r = requests.get(f["download_url"])
                 os.makedirs(os.path.dirname(complete_path), exist_ok=True)
                 with open(complete_path, "wb") as f:
@@ -40,5 +40,14 @@ def download_files(url):
             download_files(f["url"])
 
 if __name__ == "__main__":
+    print("Checking for updates...")
     if update_available():
-        download_files(root_url)
+        print("A new update is available!")
+        choice = input("Do you want to update? (type 'y' if yes): ")
+        if choice == "y":
+            print("Updating...")
+            download_files(root_url)
+        else:
+            print("Abort.")
+    else:
+        print("No updates available")
