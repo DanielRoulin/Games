@@ -9,7 +9,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 version_path = os.path.join(path, "VERSION.txt")
 
 def hash_file(path):
-    print("path")
+    print(path)
     file_size = os.path.getsize(path)
     with open(path) as f:
         string = f"blob {file_size}\x00{f.read()}"
