@@ -23,7 +23,6 @@ def update_available():
         local_version = f.read()
     return remote_version != local_version
 
-
 def download_files(url):
     r = requests.get(url)
     files = r.json()
