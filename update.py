@@ -65,6 +65,7 @@ def download_files(url):
 
 
 def clean(file_list):
+    print(file_list)
     for (root, dirs, files) in os.walk(path, topdown=True):
         print(files)
         for f in files:
