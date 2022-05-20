@@ -2,15 +2,8 @@ import os
 import subprocess
 import threading
 
-path = os.path.dirname(os.path.realpath(__file__))
-server_path = os.path.join(path, "server.py")
-client_path = os.path.join(path, "client.py")
-
-def launch_client():
-    subprocess.call("python " + client_path, creationflags=subprocess.CREATE_NEW_CONSOLE)
-
-def launch_server():
-    subprocess.call("python " + server_path, shell = True)
+from server import start_server
+from client import start_client
 
 
 while True:
@@ -33,9 +26,8 @@ while True:
         continue
     break
 
-
-client = threading.Thread(target=launch_client)
-server = threading.Thread(target=launch_server)
+client = threading.Thread(target=start_client)
+server = threading.Thread(target=start_server)
 
 if mode == 1:
     server.start()

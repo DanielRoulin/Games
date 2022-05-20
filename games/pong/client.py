@@ -1,14 +1,15 @@
 import socket
 import time
 import json
-from huscii.renderer import HUSCIIRenderer
 
 import os
 import sys
 module_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pymodules")
 sys.path.append(module_path)
 
-import keyboard   
+import keyboard  
+from huscii.renderer import HUSCIIRenderer
+
 
 class Client:
     def __init__(self):
@@ -41,7 +42,7 @@ class Client:
         except BlockingIOError:
             pass
 
-if __name__ == "__main__":
+def start_client():
     local_client = Client()
     renderer = HUSCIIRenderer()
     while True:
@@ -69,3 +70,7 @@ if __name__ == "__main__":
         # Drawing
         renderer.draw()
         time.sleep(1/10)
+
+
+if __name__ == "__main__":
+    start_client()

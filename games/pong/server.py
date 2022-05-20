@@ -117,7 +117,8 @@ class Client:
     def send(self, data):
         self.sock.send(json.dumps(data).encode("utf-8") + b"\n")
 
-if __name__ == "__main__":   
+def start_server():  
+    global server
     server = Server()
     
     print(f"Starting server on {server.ip}")
@@ -125,3 +126,7 @@ if __name__ == "__main__":
     while True:
         server.update()
         time.sleep(1/10) 
+
+
+if __name__ == "__main__":
+    start_server()

@@ -12,7 +12,7 @@ module_path = os.path.join(path, "pymodules")
 version_path = os.path.join(path, "VERSION.txt")
 
 
-def install_requests():
+def import_requests():
     sys.path.append(module_path)
     try:
         globals()["requests"] = importlib.import_module("requests")
@@ -61,8 +61,8 @@ def download_files(url):
             download_files(f["url"])
 
 
-if __name__ == "__main__":
-    install_requests()
+def check_update():
+    import_requests()
 
     print("Checking for updates...")
     if update_available():
@@ -72,6 +72,6 @@ if __name__ == "__main__":
             print("Updating...")
             download_files(root_url)
         else:
-            print("Abort.")
+            print("Not updating.")
     else:
         print("No updates available")
