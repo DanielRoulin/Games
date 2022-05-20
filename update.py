@@ -50,7 +50,6 @@ def download_files(url):
     r = requests.get(url)
     files = r.json()
     for f in files:
-        print(f)
         if f["type"] == "file": 
             if not f["path"] in (".gitignore", "requirements.txt"):
                 complete_path = os.path.join(path, f["path"])
