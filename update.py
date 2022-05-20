@@ -1,4 +1,4 @@
-import requests
+import sys
 import os
 import hashlib
 
@@ -6,13 +6,28 @@ root_url = "https://api.github.com/repos/DanielRoulin/Games/contents/"
 version_url = "https://raw.githubusercontent.com/DanielRoulin/Games/master/VERSION.txt"
 
 path = os.path.dirname(os.path.realpath(__file__))
+module_path = os.path.join(path, "pymodules")
 version_path = os.path.join(path, "VERSION.txt")
+
+
+def import_requests():
+    try:
+        import requests
+    except ModuleNotFoundError:
+        install_modules("requests")
+        import requests
+
+
+def install_modules(*modules):
+    os.system(f"pip install --target={module_path} {' '.join(modules)}")
+
 
 def hash_file(path):
     file_size = os.path.getsize(path)
     with open(path, "rb") as f:
         string = f"blob {file_size}\x00".encode() + f.read()
     return hashlib.sha1(string).hexdigest()
+
 
 def update_available():
     if not os.path.exists(version_path):
@@ -22,6 +37,7 @@ def update_available():
     with open(version_path) as f:
         local_version = f.read()
     return remote_version != local_version
+
 
 def download_files(url):
     r = requests.get(url)
@@ -38,7 +54,11 @@ def download_files(url):
         elif f["type"] == "dir":
             download_files(f["url"])
 
+
 if __name__ == "__main__":
+    sys.path.append(module_path)
+    import_requests()
+
     print("Checking for updates...")
     if update_available():
         print("A new update is available!")
