@@ -79,3 +79,6 @@ def check_update():
             print("Not updating.")
     else:
         print("No updates available")
+
+if __name__ == "__main__":
+    check_update()
