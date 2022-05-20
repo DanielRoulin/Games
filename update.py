@@ -61,7 +61,7 @@ def download_files(url):
                     with open(complete_path, "wb") as f:
                         f.write(r.content)
         elif f["type"] == "dir":
-            files_list.append(download_files(f["url"]))
+            files_list.extend(download_files(f["url"]))
     return files_list
 
 
