@@ -94,7 +94,7 @@ def check_update():
             files = download_files(root_url)
 
             print("Cleaning up")
-            clean(files)
+            # clean(files)
         else:
             print("Not updating.")
     else:
