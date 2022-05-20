@@ -71,7 +71,7 @@ def clean(file_list):
         for f in files:
             complete_path = os.path.join(root, f)
             if not complete_path in file_list and not "pymodules" in complete_path:
-                print(complete_path)
+                os.remove(complete_path)
     
 
 def check_update():
