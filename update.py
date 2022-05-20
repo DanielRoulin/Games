@@ -6,6 +6,7 @@ import importlib
 
 root_url = "https://api.github.com/repos/DanielRoulin/Games/contents/"
 version_url = "https://raw.githubusercontent.com/DanielRoulin/Games/master/VERSION.txt"
+requirements_url = "https://raw.githubusercontent.com/DanielRoulin/Games/master/requirements.txt"
 
 path = os.path.dirname(os.path.realpath(__file__))
 module_path = os.path.join(path, "pymodules")
@@ -49,10 +50,7 @@ def download_files(url):
     files = r.json()
     for f in files:
         if f["type"] == "file": 
-            if f["path"] == "requirements.txt":
-                r = requests.get(f["download_url"])
-                install_modules(*r.text.split("\n"))
-            elif f["path"] != ".gitignore":
+            if f["path"] != ".gitignore":
                 complete_path = os.path.join(path, f["path"])
                 if not os.path.exists(complete_path) or f["sha"] != hash_file(complete_path):
                     print("Updating file " + f["path"])
@@ -60,9 +58,9 @@ def download_files(url):
                     os.makedirs(os.path.dirname(complete_path), exist_ok=True)
                     with open(complete_path, "wb") as f:
                         f.write(r.content)
-
         elif f["type"] == "dir":
             download_files(f["url"])
+    
 
 
 def check_update():
@@ -73,6 +71,10 @@ def check_update():
         print("A new update is available!")
         choice = input("Do you want to update? (type 'y' if yes): ")
         if choice == "y":
+            print("Installing requirements...")
+            r = requests.get(requirements_url)
+            install_modules(*r.text.split("\n"))
+
             print("Updating...")
             download_files(root_url)
         else:
