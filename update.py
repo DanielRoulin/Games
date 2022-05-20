@@ -1,6 +1,8 @@
+import site
 import sys
 import os
 import hashlib
+import importlib
 
 root_url = "https://api.github.com/repos/DanielRoulin/Games/contents/"
 version_url = "https://raw.githubusercontent.com/DanielRoulin/Games/master/VERSION.txt"
@@ -10,15 +12,19 @@ module_path = os.path.join(path, "pymodules")
 version_path = os.path.join(path, "VERSION.txt")
 
 
-def import_requests():
+def install_requests():
+    sys.path.append(module_path)
     try:
-        import requests
+        globals()["requests"] = importlib.import_module("requests")
     except ModuleNotFoundError:
         install_modules("requests")
-        import requests
+        importlib.invalidate_caches() 
+        importlib.reload(site)
+        globals()["requests"] = importlib.import_module("requests")
 
 
 def install_modules(*modules):
+    print(f"pip install --target={module_path} {' '.join(modules)}")
     os.system(f"pip install --target={module_path} {' '.join(modules)}")
 
 
@@ -56,8 +62,7 @@ def download_files(url):
 
 
 if __name__ == "__main__":
-    sys.path.append(module_path)
-    import_requests()
+    install_requests()
 
     print("Checking for updates...")
     if update_available():
