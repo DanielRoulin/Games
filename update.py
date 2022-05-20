@@ -46,12 +46,14 @@ def update_available():
 
 
 def download_files(url):
+    files_list = []
     r = requests.get(url)
     files = r.json()
     for f in files:
         if f["type"] == "file": 
-            if f["path"] != ".gitignore":
+            if not f["path"] in (".gitignore", "requirements.txt"):
                 complete_path = os.path.join(path, f["path"])
+                files_list.append(complete_path)
                 if not os.path.exists(complete_path) or f["sha"] != hash_file(complete_path):
                     print("Updating file " + f["path"])
                     r = requests.get(f["download_url"])
@@ -60,8 +62,15 @@ def download_files(url):
                         f.write(r.content)
         elif f["type"] == "dir":
             download_files(f["url"])
-    
 
+
+def clean(file_list):
+    for (root, dirs, files) in os.walk(path, topdown=True):
+        for f in files:
+            complete_path = os.path.join(root, f)
+            if not complete_path in file_list and not "pymodules" in complete_path:
+                print(complete_path)
+    
 
 def check_update():
     import_requests()
@@ -76,7 +85,10 @@ def check_update():
             install_modules(*r.text.split("\n"))
 
             print("Updating...")
-            download_files(root_url)
+            files = download_files(root_url)
+
+            print("Cleaning up")
+            clean(files)
         else:
             print("Not updating.")
     else:
