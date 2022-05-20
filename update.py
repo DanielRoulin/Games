@@ -24,7 +24,6 @@ def import_requests():
 
 
 def install_modules(*modules):
-    print(f"pip install --target={module_path} {' '.join(modules)}")
     os.system(f"pip install --target={module_path} {' '.join(modules)}")
 
 
@@ -49,14 +48,19 @@ def download_files(url):
     r = requests.get(url)
     files = r.json()
     for f in files:
-        if f["type"] == "file":
-            complete_path = os.path.join(path, f["path"])
-            if not os.path.exists(complete_path) or f["sha"] != hash_file(complete_path):
-                print("Updating file " + f["path"])
+        if f["type"] == "file": 
+            if f["path"] == "requirements.txt":
                 r = requests.get(f["download_url"])
-                os.makedirs(os.path.dirname(complete_path), exist_ok=True)
-                with open(complete_path, "wb") as f:
-                    f.write(r.content)
+                install_modules(*r.text.split("\n"))
+            elif f["path"] != ".gitignore":
+                complete_path = os.path.join(path, f["path"])
+                if not os.path.exists(complete_path) or f["sha"] != hash_file(complete_path):
+                    print("Updating file " + f["path"])
+                    r = requests.get(f["download_url"])
+                    os.makedirs(os.path.dirname(complete_path), exist_ok=True)
+                    with open(complete_path, "wb") as f:
+                        f.write(r.content)
+
         elif f["type"] == "dir":
             download_files(f["url"])
 
