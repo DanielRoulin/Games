@@ -66,9 +66,9 @@ def download_files(url):
 
 def clean(file_list):
     for (root, dirs, files) in os.walk(path, topdown=True):
+        print(files)
         for f in files:
             complete_path = os.path.join(root, f)
-            print(complete_path)
             if not complete_path in file_list and not "pymodules" in complete_path:
                 print(complete_path)
     
